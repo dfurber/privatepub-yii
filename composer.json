@@ -1,0 +1,23 @@
+{
+  "name": "gorges/privatepub-yii",
+  "description": "Private PubSub with Faye",
+  "keywords": ["yii", "extension", "widget", "form", "builder"],
+  "homepage": "https://github.com/dfurber/privatepub-yii",
+  "type": "yii-extension",
+  "license": "BSD 3-Clause",
+  "authors": [
+    {
+      "name": "David Furber",
+      "email": "dfurber@gorges.us",
+      "homepage": "http://www.gorges.us"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "ext\\privatepub\\": ""
+    }
+  }
+}
