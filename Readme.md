@@ -73,30 +73,30 @@ Think of "channels" as URL paths. In the HTTP world, let's say that a comment ge
 
 1. The browser/client *subscribes* to the channel. The following code hooks into the client script manager to load the private pub javascript and subscribe the user to the channel:
 
-        ```php
-        Yii::app()->privatepub->subscribeTo('/posts/42');
-        ```
+```php
+Yii::app()->privatepub->subscribeTo('/posts/42');
+```
 
 2. The server *publishes* events to the channel. Note that provide enough data so that the front end can react:
 
-        ```php
-        function afterSave() {
-          Yii::app()->privatepub->publishTo('/posts/'.$this->id, array('action' => 'update_post', 'post' => $this->getAttributes()));
-          return parent::afterSave();
-        }
-        ```
+```php
+function afterSave() {
+  Yii::app()->privatepub->publishTo('/posts/'.$this->id, array('action' => 'update_post', 'post' => $this->getAttributes()));
+  return parent::afterSave();
+}
+```
         
 3. The browser/client handles the publish event for the channel:
 
-        ```javascript
-        function myHandler(json) {
-          alert('Yo man I just got called via push!');
-          console.log(json.action); // Should be 'update_post' from step 2
-          console.log(json.post); // Should have the attributes of the post.
-          // some code here might lead up to a $scope.post = json.post ...
-        }
-        PrivatePub.subscribe('/posts/42', myHandler);
-        ```
+```javascript
+function myHandler(json) {
+  alert('Yo man I just got called via push!');
+  console.log(json.action); // Should be 'update_post' from step 2
+  console.log(json.post); // Should have the attributes of the post.
+  // some code here might lead up to a $scope.post = json.post ...
+}
+PrivatePub.subscribe('/posts/42', myHandler);
+```
         
 ### SSL Considerations
 
