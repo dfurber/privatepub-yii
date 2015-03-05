@@ -61,19 +61,24 @@ foreach ($data as $item)
     else
         $value = str_replace("'", '', $value);
     $_ENV[$key] = $value;
+    putenv("$key=$value");
 } 
 ```
+
+NOTE: The above is a diversion from what you need to do to get the thing working. If you put the server and token config into your local.php, that will be fine. The recommendation to use ENV vars is a shill for the 12 factor app, which makes configuration parameters easier to manage, easier to keep secret, easier to keep out of source control, easier to deploy with Docker, Heroku, Dokku, or just plain Ubuntu. There are several flavors of PHP dotenv.
 
 ### Usage
 
 Think of "channels" as URL paths. In the HTTP world, let's say that a comment gets added to a post, and you want to broadcast that comment to anyone who is viewing that post. So you might have a channel called "/posts/42". Users on the web page for that post would subscribe to that channel. On the server, as the post gets updated and comments get added, removed, edited, etc, you publish that event along with enough data for the front end to process it. All in all three steps or concepts:
 
 1. The browser/client *subscribes* to the channel. The following code hooks into the client script manager to load the private pub javascript and subscribe the user to the channel:
+
         ```php
         Yii::app()->privatepub->subscribeTo('/posts/42');
         ```
 
 2. The server *publishes* events to the channel. Note that provide enough data so that the front end can react:
+
         ```php
         function afterSave() {
           Yii::app()->privatepub->publishTo('/posts/'.$this->id, array('action' => 'update_post', 'post' => $this->getAttributes()));
@@ -82,6 +87,7 @@ Think of "channels" as URL paths. In the HTTP world, let's say that a comment ge
         ```
         
 3. The browser/client handles the publish event for the channel:
+
         ```javascript
         function myHandler(json) {
           alert('Yo man I just got called via push!');
