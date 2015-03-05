@@ -18,7 +18,8 @@ You will see that private_pub the gem is a bit ambitious in that it contains bot
  * Add the alias to your imports: 'ext.privatepub.*'
 
  * Add to your Yii components config:
-'''php
+ 
+```php
 'privatepub' => array(
    'class' => 'ext\privatepub\PrivatePub',
    'server' => $_ENV['PRIVATE_PUB_SERVER'],
@@ -26,7 +27,7 @@ You will see that private_pub the gem is a bit ambitious in that it contains bot
    'publishAssets' => false,
    //'curlCallback' => function($curl) { return $curl; }
 ),
-'''
+```
 
 ### Configuration
 
@@ -34,14 +35,14 @@ There are 2 things that need to get set: the server and the token. These are use
 
 .env file contents:
 
-'''yaml
+```yaml
 PRIVATE_PUB_SECRET_TOKEN: 76asdf87yasdf9879asd87fa987sad9f87asf
 PRIVATE_PUB_SERVER: https://myapp.test:3030/faye
-'''
+```
 
 And in the index.php (or a file included by the index.php):
 
-'''php
+```php
 $env_file = '.env';
 if (defined('YII_ENV') && YII_ENV === 'test')
     $env_file .= '.test';
@@ -61,27 +62,27 @@ foreach ($data as $item)
         $value = str_replace("'", '', $value);
     $_ENV[$key] = $value;
 } 
-'''
+```
 
 ### Usage
 
 Think of "channels" as URL paths. In the HTTP world, let's say that a comment gets added to a post, and you want to broadcast that comment to anyone who is viewing that post. So you might have a channel called "/posts/42". Users on the web page for that post would subscribe to that channel. On the server, as the post gets updated and comments get added, removed, edited, etc, you publish that event along with enough data for the front end to process it. All in all three steps or concepts:
 
 1. The browser/client *subscribes* to the channel. The following code hooks into the client script manager to load the private pub javascript and subscribe the user to the channel:
-        '''php
+        ```php
         Yii::app()->privatepub->subscribeTo('/posts/42');
-        '''
+        ```
 
 2. The server *publishes* events to the channel. Note that provide enough data so that the front end can react:
-        '''php
+        ```php
         function afterSave() {
           Yii::app()->privatepub->publishTo('/posts/'.$this->id, array('action' => 'update_post', 'post' => $this->getAttributes()));
           return parent::afterSave();
         }
-        '''
+        ```
         
 3. The browser/client handles the publish event for the channel:
-        '''javascript
+        ```javascript
         function myHandler(json) {
           alert('Yo man I just got called via push!');
           console.log(json.action); // Should be 'update_post' from step 2
@@ -89,7 +90,7 @@ Think of "channels" as URL paths. In the HTTP world, let's say that a comment ge
           // some code here might lead up to a $scope.post = json.post ...
         }
         PrivatePub.subscribe('/posts/42', myHandler);
-        '''
+        ```
         
 ### SSL Considerations
 
